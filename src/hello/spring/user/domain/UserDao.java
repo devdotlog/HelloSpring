@@ -1,15 +1,22 @@
 package hello.spring.user.domain;
 
+import hello.spring.user.dao.SimpleConnectionMaker;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class UserDao {
+public class UserDao {
+
+    private SimpleConnectionMaker simpleConnectionMaker;
+
+    public UserDao() {
+        simpleConnectionMaker = new SimpleConnectionMaker();
+    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
 
         PreparedStatement ps = c.prepareStatement(
             "insert into users(id, name, password) values(?, ?, ?)"
@@ -25,7 +32,7 @@ public abstract class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
 
         PreparedStatement ps = c.prepareStatement(
             "select * from users where id = ?"
@@ -47,30 +54,21 @@ public abstract class UserDao {
         return user;
     }
 
-    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
-
-    public class NUserDao extends UserDao {
-
-        @Override
-        public Connection getConnection() {
-            return null;
-        }
-    }
-
-    public class DUeseDao extends UserDao {
-
-        @Override
-        public Connection getConnection() {
-            return null;
-        }
-    }
-
-//    {
-//        Class.forName("org.sqlite.JDBC");
-//        Connection c = DriverManager.getConnection(
-//            "jdbc:sqlite:/C:\\Users\\SanghoSeo-DigiCAP\\Documents\\HelloSpring\\local.db"
-//        );
+//    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 //
-//        return c;
+//    public class NUserDao extends UserDao {
+//
+//        @Override
+//        public Connection getConnection() {
+//            return null;
+//        }
+//    }
+//
+//    public class DUeseDao extends UserDao {
+//
+//        @Override
+//        public Connection getConnection() {
+//            return null;
+//        }
 //    }
 }
