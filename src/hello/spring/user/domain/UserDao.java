@@ -6,13 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDao {
+public abstract class UserDao {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-        Connection c = DriverManager.getConnection(
-            "jdbc:sqlite:/C:\\Users\\SanghoSeo-DigiCAP\\Documents\\HelloSpring\\local.db"
-        );
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement(
             "insert into users(id, name, password) values(?, ?, ?)"
@@ -28,10 +25,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-        Connection c = DriverManager.getConnection(
-            "jdbc:sqlite:/C:\\Users\\SanghoSeo-DigiCAP\\Documents\\HelloSpring\\local.db"
-        );
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement(
             "select * from users where id = ?"
@@ -53,4 +47,30 @@ public class UserDao {
         return user;
     }
 
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+
+    public class NUserDao extends UserDao {
+
+        @Override
+        public Connection getConnection() {
+            return null;
+        }
+    }
+
+    public class DUeseDao extends UserDao {
+
+        @Override
+        public Connection getConnection() {
+            return null;
+        }
+    }
+
+//    {
+//        Class.forName("org.sqlite.JDBC");
+//        Connection c = DriverManager.getConnection(
+//            "jdbc:sqlite:/C:\\Users\\SanghoSeo-DigiCAP\\Documents\\HelloSpring\\local.db"
+//        );
+//
+//        return c;
+//    }
 }
